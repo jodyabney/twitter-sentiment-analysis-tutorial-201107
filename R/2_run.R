@@ -1,3 +1,17 @@
+library(stringi)
+asciify <- function(text) { 
+    text <- stri_trans_general(text, 'Any-Latin')
+    text <- stri_trans_general(text, 'Any-Publishing')
+    text <- stri_trans_general(text, 'Latin-Ascii')
+    text
+}
+
+cleanText <- function(text) {
+    Encoding(text) <- "UTF-8"
+    text <- iconv(text, "UTF-8", "UTF-8", sub='')
+    text <- asciify(text)
+}
+
 
 if (VERBOSE)
 {
@@ -10,11 +24,18 @@ if (VERBOSE)
 # a tutorial, after all :)
 
 american.text = laply(american.tweets, function(t) t$getText() )
+american.text <- cleanText(american.text)
 delta.text = laply(delta.tweets, function(t) t$getText() )
+delta.text <- cleanText(delta.text)
 jetblue.text = laply(jetblue.tweets, function(t) t$getText() )
+jetblue.text <- cleanText(jetblue.text)
 southwest.text = laply(southwest.tweets, function(t) t$getText() )
+southwest.text <- cleanText(southwest.text)
 united.text = laply(united.tweets, function(t) t$getText() )
+united.text <- cleanText(united.text)
 us.text = laply(us.tweets, function(t) t$getText() )
+us.text <- cleanText(us.text)
+
 
 american.scores = score.sentiment(american.text, pos.words, neg.words, .progress='text')
 delta.scores = score.sentiment(delta.text, pos.words, neg.words, .progress='text')
@@ -88,7 +109,7 @@ compare.df = merge(twitter.df, acsi.df, by=c('code', 'airline'),
 # build scatter plot
 g.scatter = ggplot( compare.df, aes(x=score.twitter, y=score.acsi) ) + 
 			      geom_point( aes(color=airline), size=5 ) + 
-			      theme_bw() + opts( legend.position=c(0.2, 0.85) )
+			      theme_bw() + theme( legend.position=c(0.2, 0.85) )
 
 # have ggplot2 fit and plot a linear model with R's lm() function
 g.fit = g.scatter + geom_smooth(aes(group=1), se=F, method="lm")

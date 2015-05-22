@@ -20,8 +20,14 @@ score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
 	scores = laply(sentences, function(sentence, pos.words, neg.words) {
 		
 		# clean up sentences with R's regex-driven global substitute, gsub():
-		sentence = gsub('[[:punct:]]', '', sentence)
-		sentence = gsub('[[:cntrl:]]', '', sentence)
+	    sentence = gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", sentence)
+	    sentence = gsub("@\\w+", "", sentence)
+	    sentence = gsub("[[:punct:]]", "", sentence)
+	    sentence = gsub("[[:digit:]]", "", sentence)
+	    sentence = gsub("http\\w+", "", sentence)
+	    sentence = gsub("[ \t]{2,}", "", sentence)
+	    sentence = gsub("^\\s+|\\s+$", "", sentence)
+	    sentence = gsub("amp", "", sentence)
 		sentence = gsub('\\d+', '', sentence)
 		# and convert to lower case:
 		sentence = tolower(sentence)
