@@ -4,6 +4,7 @@
 #			 * airline-related tweets via twitteR's searchTwitter()
 #			 * ACSI scores with XML's readHTMLTable()
 #
+TWEET_LIMIT <- 500
 
 if (VERBOSE)
 	print("Searching Twitter for airline tweets and saving to disk")
@@ -46,43 +47,44 @@ access_token <- "14112649-JTFNAazaS3q1beILGeRDmytcvd9q9UPqoLQAnMKgX"
 access_token_secret <- "MjvfxJjJ5UMOxzM2YzQm5IbyyeuhCvk8l9kuJYOexzDSB"
 setup_twitter_oauth(api_key,api_secret)#,access_token,access_token_secret)
 
-print("Getting Pfizer tweets...")
-pfizer.tweets = searchTwitter('@pfizer', n=1500)
-save(pfizer.tweets, file=file.path(dataDir, 'pfizer.tweets.RData' ), ascii=T)
-
 print("Getting Novartis tweets...")
-novartis.tweets = searchTwitter('@Novartis', n=1500)
+novartis.tweets = searchTwitter('@Novartis', n=TWEET_LIMIT)
 save(novartis.tweets, file=file.path(dataDir, 'novartis.tweets.RData' ), ascii=T)
 
-print("Getting Sanofi tweets...")
-sanofi.tweets = searchTwitter('@sanofi', n=1500)
-save(sanofi.tweets, file=file.path(dataDir, 'sanofi.tweets.RData' ), ascii=T)
+print("Getting Pfizer tweets...")
+pfizer.tweets = searchTwitter('@pfizer', n=TWEET_LIMIT)
+save(pfizer.tweets, file=file.path(dataDir, 'pfizer.tweets.RData' ), ascii=T)
 
 print("Getting Roche Holding tweets...")
-roche.tweets = searchTwitter('@Roche', n=1500)
+roche.tweets = searchTwitter('@Roche', n=TWEET_LIMIT)
 save(roche.tweets, file=file.path(dataDir, 'roche.tweets.RData' ), ascii=T)
 
+print("Getting Sanofi tweets...")
+sanofi.tweets = searchTwitter('@sanofi', n=TWEET_LIMIT)
+save(sanofi.tweets, file=file.path(dataDir, 'sanofi.tweets.RData' ), ascii=T)
+
 print("Getting Merck tweets...")
-merck.tweets = searchTwitter('@Merck', n=1500)
+merck.tweets = searchTwitter('@Merck', n=TWEET_LIMIT)
 save(merck.tweets, file=file.path(dataDir, 'merck.tweets.RData' ), ascii=T)
 
 print("Getting GlaxoSmithKline tweets...")
-gsk.tweets = searchTwitter('@gsk', n=1500)
+gsk.tweets = searchTwitter('@gsk', n=TWEET_LIMIT)
 save(gsk.tweets, file=file.path(dataDir, 'gsk.tweets.RData' ), ascii=T)
 
+print("Getting Johnson & Johnson tweets...")
+jnj.tweets = searchTwitter('@JNJNews', n=TWEET_LIMIT)
+save(jnj.tweets, file=file.path(dataDir, 'jnj.tweets.RData' ), ascii=T)
+
 print("Getting AstraZeneca tweets...")
-astrazeneca.tweets = searchTwitter('@AstraZeneca', n=1500)
+astrazeneca.tweets = searchTwitter('@AstraZeneca', n=TWEET_LIMIT)
 save(astrazeneca.tweets, file=file.path(dataDir, 'astrazeneca.tweets.RData' ), ascii=T)
 
 print("Getting Eli Lilly tweets...")
-eli.tweets = searchTwitter('@LillyPad', n=1500)
+eli.tweets = searchTwitter('@LillyPad', n=TWEET_LIMIT)
 save(eli.tweets, file=file.path(dataDir, 'eli.tweets.RData' ), ascii=T)
 
-print("Getting Abbott Laboratories tweets...")
-abbott.tweets = searchTwitter('@AbbottNews', n=1500)
-save(abbott.tweets, file=file.path(dataDir, 'abbott.tweets.RData' ), ascii=T)
+print("Getting Abbvie tweets...")
+abbvie.tweets = searchTwitter('@abbvie', n=TWEET_LIMIT)
+save(abbvie.tweets, file=file.path(dataDir, 'abbvie.tweets.RData' ), ascii=T)
 
-print("Getting McKesson tweets...")
-mckesson.tweets = searchTwitter('@McKesson', n=1500)
-save(mckesson.tweets, file=file.path(dataDir, 'mckesson.tweets.RData' ), ascii=T)
 

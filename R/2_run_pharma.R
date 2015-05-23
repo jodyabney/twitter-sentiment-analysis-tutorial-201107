@@ -1,4 +1,6 @@
 library(stringi)
+library(scales)
+library(dichromat)
 asciify <- function(text) { 
     text <- stri_trans_general(text, 'Any-Latin')
     text <- stri_trans_general(text, 'Any-Publishing')
@@ -23,18 +25,6 @@ if (VERBOSE)
 # we do end up with lots of objects in memory to play with (it _is_
 # a tutorial, after all :)
 
-abbott.text = laply(abbott.tweets, function(t) t$getText() )
-abbott.text <- cleanText(abbott.text)
-astrazeneca.text = laply(astrazeneca.tweets, function(t) t$getText() )
-astrazeneca.text <- cleanText(astrazeneca.text)
-eli.text = laply(eli.tweets, function(t) t$getText() )
-eli.text <- cleanText(eli.text)
-gsk.text = laply(gsk.tweets, function(t) t$getText() )
-gsk.text <- cleanText(gsk.text)
-mckesson.text = laply(mckesson.tweets, function(t) t$getText() )
-mckesson.text <- cleanText(mckesson.text)
-merck.text = laply(merck.tweets, function(t) t$getText() )
-merck.text <- cleanText(merck.text)
 novartis.text = laply(novartis.tweets, function(t) t$getText() )
 novartis.text <- cleanText(novartis.text)
 pfizer.text = laply(pfizer.tweets, function(t) t$getText() )
@@ -43,36 +33,48 @@ roche.text = laply(roche.tweets, function(t) t$getText() )
 roche.text <- cleanText(roche.text)
 sanofi.text = laply(sanofi.tweets, function(t) t$getText() )
 sanofi.text <- cleanText(sanofi.text)
+merck.text = laply(merck.tweets, function(t) t$getText() )
+merck.text <- cleanText(merck.text)
+gsk.text = laply(gsk.tweets, function(t) t$getText() )
+gsk.text <- cleanText(gsk.text)
+jnj.text <- laply(jnj.tweets, function(t) t$getText() )
+jnj.text <- cleanText(jnj.text)
+astrazeneca.text = laply(astrazeneca.tweets, function(t) t$getText() )
+astrazeneca.text <- cleanText(astrazeneca.text)
+eli.text = laply(eli.tweets, function(t) t$getText() )
+eli.text <- cleanText(eli.text)
+abbvie.text <- laply(abbvie.tweets, function(t) t$getText() )
+abbvie.text <- cleanText(abbvie.text)
 
 
-abbott.scores = score.sentiment(abbott.text, pos.words, neg.words, .progress='text')
-astrazeneca.scores = score.sentiment(astrazeneca.text, pos.words, neg.words, .progress='text')
-eli.scores = score.sentiment(eli.text, pos.words, neg.words, .progress='text')
-gsk.scores = score.sentiment(gsk.text, pos.words, neg.words, .progress='text')
-mckesson.scores = score.sentiment(mckesson.text, pos.words, neg.words, .progress='text')
-merck.scores = score.sentiment(merck.text, pos.words, neg.words, .progress='text')
 novartis.scores = score.sentiment(novartis.text, pos.words, neg.words, .progress='text')
 pfizer.scores = score.sentiment(pfizer.text, pos.words, neg.words, .progress='text')
 roche.scores = score.sentiment(roche.text, pos.words, neg.words, .progress='text')
 sanofi.scores = score.sentiment(sanofi.text, pos.words, neg.words, .progress='text')
+merck.scores = score.sentiment(merck.text, pos.words, neg.words, .progress='text')
+gsk.scores = score.sentiment(gsk.text, pos.words, neg.words, .progress='text')
+jnj.scores <- score.sentiment(jnj.text, pos.words, neg.words, .progress='text')
+astrazeneca.scores = score.sentiment(astrazeneca.text, pos.words, neg.words, .progress='text')
+eli.scores = score.sentiment(eli.text, pos.words, neg.words, .progress='text')
+abbvie.scores = score.sentiment(abbvie.text, pos.words, neg.words, .progress='text')
 
 
+novartis.scores$pharma = '01 Novartis (Switzerland)'
+pfizer.scores$pharma = '02 Pfizer (USA)'
+roche.scores$pharma = '03 Roche Holding (Switzerland)'
+sanofi.scores$pharma = '04 Sanofi (France)'
+merck.scores$pharma = '05 Merck & Co., Inc. (USA)'
+gsk.scores$pharma = '06 GlaxoSmithKline (UK)'
+jnj.scores$pharma <- '07 Johnson & Johnson (USA)'
+astrazeneca.scores$pharma = '08 AstraZeneca (UK)'
+eli.scores$pharma = '09 Eli Lilly & Co. (USA)'
+abbvie.scores$pharma = '10 AbbVie (USA)'
 
-abbott.scores$pharma = 'Abbott Laboratories (USA)'
-astrazeneca.scores$pharma = 'AstraZeneca (UK)'
-eli.scores$pharma = 'Eli Lilly & Co. (USA)'
-gsk.scores$pharma = 'GlaxoSmithKline (UK)'
-mckesson.scores$pharma = 'McKesson (USA)'
-merck.scores$pharma = 'Merck & Co., Inc. (USA)'
-novartis.scores$pharma = 'Novartis (Switzerland)'
-pfizer.scores$pharma = 'Pfizer (USA)'
-roche.scores$pharma = 'Roche Holding (Switzerland)'
-sanofi.scores$pharma = 'Sanofi (France)'
 
-all.scores = rbind( abbott.scores, astrazeneca.scores, eli.scores, 
-					gsk.scores, mckesson.scores, merck.scores, 
-                    novartis.scores, pfizer.scores, roche.scores, 
-                    sanofi.scores)
+all.scores = rbind( novartis.scores, pfizer.scores, roche.scores,
+                    sanofi.scores, merck.scores, gsk.scores,
+                    jnj.scores, astrazeneca.scores, eli.scores, 
+                    abbvie.scores )
 
 if (VERBOSE)
 	print("Plotting score distributions")
@@ -87,11 +89,19 @@ g.hist = g.hist + geom_bar( binwidth=1 )
 # make a separate plot for each airline
 g.hist = g.hist + facet_grid(pharma~.)
 
-# plain display, nice colors
-g.hist = g.hist + theme_bw() #+ scale_fill_brewer() 
+# plain display, nice colorblind-safe colors
+g.hist = g.hist + theme_bw() + scale_fill_brewer(palette="Paired") +
+    ggtitle("Top 10 Global Pharma Companies Twitter Sentiment Analysis\nbased on last 500 tweets as of 22-May-2015 approx. 7:00 AM ET")
 
 print(g.hist)
-ggsave(file.path(outputDir, 'twitter_score_histograms.pdf'), g.hist, width=6, height=5.5)
+ggsave(file.path(outputDir, 'twitter_score_histograms.pdf'), g.hist, width=7.5, height=10)
+
+
+g.merck <- ggplot(data=merck.scores, mapping=aes(x=score))
+g.merck <- g.merck + geom_bar( binwidth=1 )
+g.merck <- g.merck + theme_bw()
+print(g.merck)
+ggsave(file.path(outputDir, 'twitter_score_merck.pdf'), g.merck, width=7.5, height=10)
 
 
 # if (VERBOSE)
